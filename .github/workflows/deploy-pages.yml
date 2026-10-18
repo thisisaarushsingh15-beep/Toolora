@@ -1,0 +1,56 @@
+name: Deploy to GitHub Pages
+
+# Publishes the prerendered static export (bun run build:pages -> dist/pages) to
+# GitHub Pages at https://thisisaarushsingh15-beep.github.io/Toolora/ on every
+# push to main. The build output is never committed; this workflow builds it.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race: keep the newest queued run, let the running one finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build static export
+        run: bun run build:pages
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/pages
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

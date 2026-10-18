@@ -3,11 +3,36 @@
  * title, a meta description, a canonical link and Open Graph / Twitter tags.
  */
 
+/**
+ * The origin every canonical, Open Graph URL and sitemap entry is built from.
+ *
+ * Defaults to the live preview origin. The static GitHub Pages build sets
+ * VITE_SITE_URL (see vite.config.pages.ts / the deploy-pages workflow) because
+ * that build is served from https://<user>.github.io/Toolora instead — the
+ * value is read at build time, so each output embeds its own origin.
+ */
+const DEFAULT_ORIGIN = "https://f87ba6f3a5b73ddd0c1ad37f4d1c6ad1.ctonew.app";
+
+function configuredOrigin(): string {
+  let fromEnv: string | undefined;
+  try {
+    // Vite replaces import.meta.env at build time (client and SSR builds).
+    fromEnv = (import.meta as unknown as { env?: Record<string, string | undefined> }).env
+      ?.VITE_SITE_URL;
+  } catch {
+    fromEnv = undefined;
+  }
+  if (!fromEnv && typeof process !== "undefined" && process.env) {
+    fromEnv = process.env.VITE_SITE_URL;
+  }
+  return (fromEnv || DEFAULT_ORIGIN).replace(/\/+$/, "");
+}
+
 export const SITE = {
   name: "Toolora",
   tagline: "Useful Tools. Zero Hassle.",
-  /** Public origin of the live site. Change here if a real domain is added. */
-  url: "https://f87ba6f3a5b73ddd0c1ad37f4d1c6ad1.ctonew.app",
+  /** Public origin of the live site. Overridable at build time with VITE_SITE_URL. */
+  url: configuredOrigin(),
   description:
     "Free online tools that run in your browser — percentage, grade, age and date calculators, a word counter, text and unit converters, a budget planner and a study timer. No account needed.",
 };

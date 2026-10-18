@@ -8,6 +8,7 @@
     "build": "vite build",
     "start": "bun run serve.ts",
     "publish": "bash ./publish.sh",
+    "build:pages": "VITE_SITE_URL=https://thisisaarushsingh15-beep.github.io/Toolora vite build --config vite.config.pages.ts && bun scripts/pages-postbuild.ts",
     "go-live": "bash ./go-live.sh",
     "format": "prettier --write ."
   },

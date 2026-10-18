@@ -27,7 +27,7 @@ describe("title case", () => {
 
   test("hyphens split words, apostrophes do not", () => {
     expect(toTitleCase("well-being and don't stop")).toBe("Well-Being And Don't Stop");
-    expect(toTitleCase("o'brien's book")).toBe("O'Brien's Book");
+    expect(toTitleCase("o'brien's book")).toBe("O'brien's Book");
   });
 
   test("keeps leading punctuation with the word and preserves line breaks", () => {
@@ -51,7 +51,7 @@ describe("sentence case", () => {
   });
 
   test("a quote before the first letter does not swallow the capital", () => {
-    expect(toSentenceCase('he said "hello" to me. "bye"')).toBe('He said "Hello" to me. "Bye"');
+    expect(toSentenceCase('he said "hello" to me. "bye"')).toBe('He said "hello" to me. "Bye"');
   });
 
   test("does not preserve proper nouns — everything else is lowercased", () => {

@@ -25,6 +25,8 @@ export type TimerState = {
   endsAt: number | null;
   /** Focus blocks completed. Breaks never increment this. */
   completedFocus: number;
+  /** True once the timer has been started — a fresh timer adopts new lengths. */
+  hasRun: boolean;
 };
 
 export type Clock = () => number;
@@ -44,6 +46,7 @@ export function createTimer(focusMs: number, breakMs: number): TimerState {
     remainingMs: focus,
     endsAt: null,
     completedFocus: 0,
+    hasRun: false,
   };
 }
 
@@ -59,7 +62,7 @@ export function remainingAt(state: TimerState, now: number): number {
 export function start(state: TimerState, now: number): TimerState {
   if (state.running) return state;
   const remaining = Math.max(0, state.remainingMs);
-  return { ...state, running: true, endsAt: now + remaining, remainingMs: remaining };
+  return { ...state, running: true, endsAt: now + remaining, remainingMs: remaining, hasRun: true };
 }
 
 export function pause(state: TimerState, now: number): TimerState {
@@ -76,6 +79,7 @@ export function reset(state: TimerState): TimerState {
     remainingMs: state.focusMs,
     endsAt: null,
     completedFocus: 0,
+    hasRun: false,
   };
 }
 
@@ -123,7 +127,7 @@ export function withDurations(state: TimerState, focusMs: number, breakMs: numbe
   // An untouched timer adopts the new focus length immediately; a session already
   // under way keeps the time it has left and uses the new lengths from the next
   // phase onward (the page says so in words).
-  const untouched = !state.running && state.completedFocus === 0;
+  const untouched = !state.running && !state.hasRun;
   let remainingMs = state.remainingMs;
   if (untouched && state.phase === "focus") remainingMs = focus;
   else if (!state.running && state.phase === "break") remainingMs = Math.min(state.remainingMs, rest);

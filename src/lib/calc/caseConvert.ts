@@ -11,7 +11,8 @@
  *   Every whitespace-separated word gets a capital first letter and the rest of
  *   its letters lowercased — so "hELLO wORLD" becomes "Hello World".
  *   Hyphens split words too: "well-being" → "Well-Being".
- *   Apostrophes do not split words: "don't" → "Don't", "o'brien" → "O'Brien".
+ *   Apostrophes do not split words: "don't" → "Don't", "o'brien's" → "O'brien's"
+ *   (only the first letter of the word is capitalised).
  *   Leading punctuation carries over with the word: '"the end"' → '"The End"'.
  *   A word with no letters at all (e.g. "--" or "123") is left exactly as typed.
  *

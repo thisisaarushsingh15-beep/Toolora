@@ -150,7 +150,9 @@ describe("pause, resume and reset", () => {
   test("pausing a stopped timer changes nothing", () => {
     const state = createTimer(FOCUS, BREAK);
     expect(pause(state, 0)).toBe(state);
-    expect(start(start(state, 0), 1).endsAt).toBe(start(state, 1).endsAt);
+    const running = start(state, 5);
+    expect(start(running, 99)).toBe(running);
+    expect(running.endsAt).toBe(5 + FOCUS);
   });
 });
 
